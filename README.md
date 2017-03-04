@@ -8,38 +8,64 @@ Created readme file testing
   [HttpGet]
         public async Task<JsonResult> ChartData()
         {
+
+            var chartConfig = CreateServerConfiguration();
+            var test = chartConfig.MakeChart();
+            return Json(chartConfig.MakeChart(), JsonRequestBehavior.AllowGet);
+        }
+        
+     /// <summary>
+        /// You can construct your configuration here
+        /// You can call database to get data and fill your data set
+        /// </summary>
+        /// <returns></returns>
+        private static ChartConfiguration CreateServerConfiguration()
+        {
             var chartConfig = new ChartConfiguration
             {
-                type = "bar",
-                data = new Data
+                Type = ChartType.bar.GetChartType(),
+                Data =
                 {
-                    labels = new List<string> { "Red", "Blue", "Yellow", "Green", "Purple", "Orange" },
-                }
-
-            };
-            chartConfig.data.datasets = new List<DataSetItem>()
-            {
-                new DataSetItem()
-                {
-                    label = "Test",
-                    data = new List<int> {12, 19, 3, 5, 2, 3},
-                    borderWidth = 1,
-                    backgroundColor = new List<string>
+                    Labels = {"Red", "Blue", "Yellow", "Green", "Purple", "Orange"},
+                    Datasets =
                     {
-                        "rgba(255, 99, 132, 0.8)",
-                        "rgba(54, 162, 235, 0.8)",
-                        "rgba(255, 206, 86, 0.8)",
-                        "rgba(75, 192, 192, 0.8)",
-                        "rgba(153, 102, 255, 0.8)",
-                        "rgba(255, 159, 64, 0.8)"
+                        new DataSetItem()
+                        {
+                            Label = "Test",
+                            Data = new List<int> {12, 19, 3, 5, 20, 3},
+                            BorderWidth = 1,
+                            BackgroundColor = new List<string>
+                            {
+                                "rgba(255, 99, 132, 0.8)",
+                                "rgba(54, 162, 235, 0.8)",
+                                "rgba(255, 206, 86, 0.8)",
+                                "rgba(75, 192, 192, 0.8)",
+                                "rgba(153, 102, 255, 0.8)",
+                                "rgba(255, 159, 64, 0.8)"
+                            }
+                        }, new DataSetItem()
+                        {
+                            Label = "Test2",
+                            Data = new List<int> {212, 42, 32, 15, 2, 3},
+                            BorderWidth = 1,
+                            BackgroundColor = new List<string>
+                            {
+                                "rgba(255, 99, 132, 0.8)",
+                                "rgba(54, 162, 235, 0.8)",
+                                "rgba(255, 206, 86, 0.8)",
+                                "rgba(75, 192, 192, 0.8)",
+                                "rgba(153, 102, 255, 0.8)",
+                                "rgba(255, 159, 64, 0.8)"
+                            }
+                        }
                     }
+                },
+                Options =
+                {
+                    DefaultFontSize = 50
                 }
             };
-
-
-
-            var result = JsonConvert.SerializeObject(chartConfig);
-            return Json(result, JsonRequestBehavior.AllowGet);
+            return chartConfig;
         }
         
 ```
@@ -53,10 +79,8 @@ Created readme file testing
 ```javascript
  <script type="text/javascript">
         $(() => {
-            var userOption = new Helpers.UserOptions();
             var helper = new Helpers.ChartHelper(userOption);
-
             helper.createChart("@Url.Action("ChartData")","myChart");
         })
   </script>
-    ```
+ ```
